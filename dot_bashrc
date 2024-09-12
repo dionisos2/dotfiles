@@ -1,0 +1,106 @@
+# Bash initialization for interactive non-login shells and
+# for remote shells (info "(bash) Bash Startup Files").
+
+# Export 'SHELL' to child processes.  Programs such as 'screen'
+# honor it and otherwise use /bin/sh.
+export SHELL
+
+if [[ $- != *i* ]]
+then
+    # We are being invoked from a non-interactive shell.  If this
+    # is an SSH session (as in "ssh host command"), source
+    # /etc/profile so we get PATH and other essential variables.
+    [[ -n "$SSH_CLIENT" ]] && source /etc/profile
+
+    # Don't do anything else.
+    return
+fi
+
+# Source the system-wide file.
+source /etc/bashrc
+
+function abort_git_save(){
+	touch "/home/dionisos/abort_git_save"
+	exit 1
+}
+alias abort=abort_git_save
+
+function finish_git_save(){
+	touch "/home/dionisos/finish_git_save"
+	exit 0
+}
+alias finish=finish_git_save
+
+GUIX_PROFILE="/home/dionisos/.guix-profile"
+. "$GUIX_PROFILE/etc/profile"
+
+GUIX_PROFILE="$HOME/.config/guix/current"
+. "$GUIX_PROFILE/etc/profile"
+
+# Adjust the prompt depending on whether we're in 'guix environment'.
+if [ -n "$GUIX_ENVIRONMENT" ]
+then
+    PS1='\u@\h \w [env]\$ '
+else
+    PS1='\u@\h \w\$ '
+fi
+
+source ~/.config/lf/lf.bash
+
+alias ls='ls -p --color=auto'
+alias ll='ls -alFh'
+alias grep='grep --color=auto'
+alias r='lf'
+# alias rr='lfcd'
+alias python='python3'
+alias rm='echo "rm desactivated, use trash"'
+alias purge='echo "trash-empty 3 (vieux de plus de 3 jours)"; trash-empty 3'
+alias mv='mv -i'
+alias "cd.."='cd ..'
+alias y="yay --repo"
+alias ya="yay"
+alias rsync="rsync -au --progress"
+alias cp="rsync -au --progress"
+alias tm="tmsu"
+alias bl="bluetoothctl"
+alias cal="cal -y"
+alias j="z"
+alias systemctl='systemctl --no-pager'
+alias locater='locate -r'
+alias sysu='systemctl --user'
+alias sysr='doas systemctl'
+alias git='git --no-pager'
+alias jl='julia -J /home/dionisos/projets/programmation/julia/precompilation/sys_simple.so'
+# alias sudo='echo "sudo desactivated, use doas(or d alias)"'
+alias d='doas'
+alias python='python3'
+
+
+PATH=$PATH:"/home/dionisos"
+PATH=$PATH:"/usr/bin"
+PATH=$PATH:"/home/dionisos/scripts"
+PATH=$PATH:"/home/dionisos/.ghcup/bin"
+PATH=$PATH:"/home/dionisos/.local/share/go/bin"
+PATH=$PATH:"/home/dionisos/.local/bin"
+PATH=$PATH:"./"
+# PATH=$PATH:"/home/dionisos/logiciels/miniconda/bin"
+PATH=$PATH:"/home/dionisos/.local/share/gem/ruby/3.0.0/bin"
+PATH=$PATH:"/home/dionisos/.npm/packages/bin"
+PATH=$PATH:"/home/dionisos/.npm/packages/share/man"
+PATH=$PATH:"/home/dionisos/logiciels/tiddlywiki/TiddlyDesktop-linux64-v0.0.15-prerelease.2"
+export PATH
+
+export XDG_DATA_DIRS=$XDG_DATA_DIRS:"/home/dionisos/.local/share/flatpak/exports/share" # Probably not useful, I get a message about that when installing logseq with flatpak
+
+
+export BASH_COMPLETIONS="/home/dionisos/.guix-profile/etc/profile.d/bash_completion.sh"
+export COMPLETIONS_CONFIRM=True
+export SVN_EDITOR="emacsclient -c"
+export EDITOR="emacsclient -c"
+export GOPATH="/home/dionisos/.local/share/go"
+export LANG="en_US.UTF-8"
+# export PAGER="/home/dionisos/scripts/emacs_pager"
+export BORG_SERVER_REPO="ssh://dionisos@192.168.0.41:22/home/dionisos/save_portable"
+export BORG_DD_REPO="/stockage/borg_save"
+export PYTHONPATH="/home/dionisos/projets/programmation/python/lib/"
+export PRINTER="EPSON_XP-322_323_325_Series"
